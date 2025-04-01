@@ -1,17 +1,28 @@
-import React from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, ScrollView, StyleSheet, Pressable } from 'react-native';
 
 const App = () => {
+  const [advice, setAdvice] = useState('');
+
+  
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Palmoji</Text>
-
+     <Pressable onPress={() => setAdvice('Take a deep breath and enjoy the moment.')}>
       <View style={styles.emojiBox}>
         <Text style={styles.emoji}>😊</Text>
       </View>
-    </ScrollView>
+    </Pressable>
     
-  
+    
+    {advice !== '' && (
+      <View style={styles.adviceBox}>
+        <Text>{advice}</Text>
+      </View>
+    )}
+
+
+    </ScrollView>
   );
 };
 
