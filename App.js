@@ -1,26 +1,35 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, Pressable } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Pressable, Modal } from 'react-native';
 
 const App = () => {
   const [advice, setAdvice] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
 
   
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Palmoji</Text>
-     <Pressable onPress={() => setAdvice('Take a deep breath and enjoy the moment.')}>
+      <Pressable
+          onPress={() => {
+            setAdvice('Take a deep breath and enjoy the moment.');
+            setModalVisible(true);
+          }}
+        >
       <View style={styles.emojiBox}>
         <Text style={styles.emoji}>😊</Text>
       </View>
     </Pressable>
     
-    
-    {advice !== '' && (
-      <View style={styles.adviceBox}>
-        <Text>{advice}</Text>
+    <Modal visible={modalVisible} transparent={true}>
+      <View>
+        <View>
+          <Text>{advice}</Text>
+          <Pressable onPress={() => setModalVisible(false)}>
+            <Text>Close</Text>
+          </Pressable>
+        </View>
       </View>
-    )}
-
+    </Modal>
 
     </ScrollView>
   );
@@ -51,7 +60,19 @@ const styles = StyleSheet.create({
   emoji: {
     fontSize: 32,
   },
-
+// Modal Styling
+  modalBackground: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
 
 
 });
