@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, Pressable, Modal, Image } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Pressable, Modal, Image, TextInput, Button } from 'react-native';
 // My chosen external npm
 import * as Speech from 'expo-speech';
 const App = () => {
   const [advice, setAdvice] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
+  const [userNote, setUserNote] = useState('');
+  const [noteLog, setNoteLog] = useState('');
 
   
   return (
@@ -14,6 +16,8 @@ const App = () => {
         style={styles.logo}
       />
       <Text style={styles.tagline}>Tap how you feel!</Text>
+
+      {/* Pressing emoji with text and speech */}
       <Pressable
           onPress={() => {
             setAdvice('Take a deep breath and enjoy the moment.');
@@ -21,11 +25,12 @@ const App = () => {
             Speech.speak('Take a deep breath and enjoy the moment.');
           }}
         >
+          {/* Emoji boxes */}
       <View style={styles.emojiBox}>
         <Text style={styles.emoji}>😊</Text>
       </View>
     </Pressable>
-    
+          {/* Modal pop up after you tap an emoji */}
     <Modal visible={modalVisible} transparent={true}>
       <View style={styles.modalBackground}>
         <View style={styles.modalContent}>
@@ -36,6 +41,23 @@ const App = () => {
         </View>
       </View>
     </Modal>
+
+    <TextInput
+        style={styles.textInput}
+        placeholder="Write how you feel..."
+        value={userNote}
+        onChangeText={setUserNote}
+      />
+    <Button
+      title="Log Note"
+      onPress={() => {
+        setNoteLog(userNote);
+        setUserNote('');
+      }}
+    />
+    <Text style={styles.savedNoteLabel}>Saved Note:</Text>
+    <Text style={styles.savedNote}>{noteLog || '—'}</Text>
+
 
     </ScrollView>
   );
@@ -90,32 +112,55 @@ const styles = StyleSheet.create({
   },
 
 
-// Modal popup styling
-modalBackground: {
-  flex: 1,
-  justifyContent: 'center',
-  alignItems: 'center',
-  backgroundColor: 'rgba(0, 0, 0, 0.4)',
-},
-modalContent: {
-  backgroundColor: '#fff',
-  padding: 20,
-  borderRadius: 8,
-  width: 260,
-  alignItems: 'center',
-},
-adviceText: {
-  fontSize: 18,
-  textAlign: 'center',
-  marginBottom: 10,
-  fontFamily: 'Arial',
-},
-closeText: {
-  fontSize: 16,
-  fontWeight: 'bold',
-  fontFamily: 'Arial',
-},
+  // Modal popup styling
+  modalBackground: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 8,
+    width: 260,
+    alignItems: 'center',
+  },
+  adviceText: {
+    fontSize: 18,
+    textAlign: 'center',
+    marginBottom: 10,
+    fontFamily: 'Arial',
+  },
+  closeText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    fontFamily: 'Arial',
+  },
+  textInput: {
+    borderWidth: 1,
+    borderColor: '#aaa',
+    borderRadius: 6,
+    padding: 10,
+    width: '80%',
+    marginTop: 20,
+    fontFamily: 'Arial',
+    marginBottom: 10,
+  },
 
+  savedNoteLabel: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginTop: 20,
+    fontFamily: 'Arial',
+  },
+
+  savedNote: {
+    fontSize: 16,
+    fontStyle: 'italic',
+    textAlign: 'center',
+    fontFamily: 'Arial',
+  },
 
 });
 
