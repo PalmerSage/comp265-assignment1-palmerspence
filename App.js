@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, Pressable, Modal } from 'react-native';
-
+// My chosen external npm
+import * as Speech from 'expo-speech';
 const App = () => {
   const [advice, setAdvice] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
@@ -13,6 +14,7 @@ const App = () => {
           onPress={() => {
             setAdvice('Take a deep breath and enjoy the moment.');
             setModalVisible(true);
+            Speech.speak('Take a deep breath and enjoy the moment.');
           }}
         >
       <View style={styles.emojiBox}>
