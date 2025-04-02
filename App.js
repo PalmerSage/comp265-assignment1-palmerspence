@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, Pressable, Modal, Image, TextInput, Button } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Pressable, Modal, Image, TextInput, Button, Switch } from 'react-native';
 // My chosen external npm
 import * as Speech from 'expo-speech';
 const App = () => {
@@ -7,6 +7,7 @@ const App = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [userNote, setUserNote] = useState('');
   const [noteLog, setNoteLog] = useState([]);
+  const [privateMode, setPrivateMode] = useState(false);
 
 
   
@@ -43,6 +44,15 @@ const App = () => {
       </View>
     </Modal>
 
+
+
+    <View style={styles.switchContainer}>
+  <Text style={styles.switchLabel}>Private Mode (Hides Notes)</Text>
+  <Switch
+    value={privateMode}
+    onValueChange={setPrivateMode}
+  />
+</View>
     <TextInput
         style={styles.textInput}
         placeholder="Write how you feel..."
@@ -58,11 +68,16 @@ const App = () => {
         }
       }}
     />
-    <Text style={styles.savedNoteLabel}>Saved Note:</Text>
+    {/* Private mode wrapping saved notes section */}
+{!privateMode && (
+  <View style={styles.savedNoteContainer}>
+    <Text style={styles.savedNoteLabel}>Saved Notes:</Text>
+    {/* using mapping to go through array */}
     {noteLog.map((note, index) => (
-  <Text key={index} style={styles.savedNote}>• {note}</Text>
-))}
-
+      <Text key={index} style={styles.savedNote}>• {note}</Text>
+    ))}
+  </View>
+)}
 
     </ScrollView>
   );
@@ -164,6 +179,19 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontStyle: 'italic',
     textAlign: 'center',
+    fontFamily: 'Arial',
+  },
+
+  // Private mode switch
+  switchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 20,
+    gap: 10, 
+    marginBottom: -20,
+  },
+  switchLabel: {
+    fontSize: 16,
     fontFamily: 'Arial',
   },
 
