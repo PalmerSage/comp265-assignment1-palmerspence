@@ -6,7 +6,8 @@ const App = () => {
   const [advice, setAdvice] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [userNote, setUserNote] = useState('');
-  const [noteLog, setNoteLog] = useState('');
+  const [noteLog, setNoteLog] = useState([]);
+
 
   
   return (
@@ -51,12 +52,16 @@ const App = () => {
     <Button
       title="Log Note"
       onPress={() => {
-        setNoteLog(userNote);
-        setUserNote('');
+        if (userNote.trim() !== '') {
+          setNoteLog([...noteLog, userNote]);
+          setUserNote('');
+        }
       }}
     />
     <Text style={styles.savedNoteLabel}>Saved Note:</Text>
-    <Text style={styles.savedNote}>{noteLog || '—'}</Text>
+    {noteLog.map((note, index) => (
+  <Text key={index} style={styles.savedNote}>• {note}</Text>
+))}
 
 
     </ScrollView>
