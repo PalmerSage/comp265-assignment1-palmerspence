@@ -8,7 +8,17 @@ const App = () => {
   const [userNote, setUserNote] = useState('');
   const [noteLog, setNoteLog] = useState([]);
   const [privateMode, setPrivateMode] = useState(false);
-
+  const moods = [
+    { emoji: '😊', advice: 'Keep smiling. It looks good on you.' },
+    { emoji: '😢', advice: 'Let it out. You are allowed to feel this way.' },
+    { emoji: '😠', advice: 'Take a breath. Anger passes.' },
+    { emoji: '😰', advice: 'You are safe. This feeling will fade.' },
+    { emoji: '😴', advice: 'Maybe a nap would help.' },
+    { emoji: '🤔', advice: 'Pause and reflect. You’ve got this.' },
+    { emoji: '🥳', advice: 'Celebrate the little wins!' },
+    { emoji: '😎', advice: 'You are cool, calm, and collected.' },
+    { emoji: '😭', advice: 'Tears are just emotions leaving your body.' },
+  ];
 
   
   return (
@@ -20,18 +30,24 @@ const App = () => {
       <Text style={styles.tagline}>Tap how you feel!</Text>
 
       {/* Pressing emoji with text and speech */}
-      <Pressable
-          onPress={() => {
-            setAdvice('Take a deep breath and enjoy the moment.');
-            setModalVisible(true);
-            Speech.speak('Take a deep breath and enjoy the moment.');
-          }}
-        >
-          {/* Emoji boxes */}
+{/* Emoji grid */}
+<View style={styles.emojiGrid}>
+  {moods.map((mood, index) => (
+    <Pressable
+      key={index}
+      onPress={() => {
+        setAdvice(mood.advice);
+        setModalVisible(true);
+        Speech.speak(mood.advice);
+      }}
+    >
       <View style={styles.emojiBox}>
-        <Text style={styles.emoji}>😊</Text>
+        <Text style={styles.emoji}>{mood.emoji}</Text>
       </View>
     </Pressable>
+  ))}
+</View>
+
           {/* Modal pop up after you tap an emoji */}
     <Modal visible={modalVisible} transparent={true}>
       <View style={styles.modalBackground}>
@@ -43,7 +59,6 @@ const App = () => {
         </View>
       </View>
     </Modal>
-
 
 
     <View style={styles.switchContainer}>
@@ -98,7 +113,18 @@ const styles = StyleSheet.create({
     fontWeight: 500,
   },
   
-  // Box with emoji in it
+
+  emojiGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    marginTop: 20,
+    width: 370, // 👈 forces it to wrap into 3 per row (3 boxes * 80px + 3 gaps)
+  },
+  
+  
+  
+
   emojiBox: {
     width: 80,
     height: 80,
@@ -106,8 +132,9 @@ const styles = StyleSheet.create({
     borderColor: '#000',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 20,
+    margin: 8, // 👈 adds space around each box
   },
+  
   // Emoji size
   emoji: {
     fontSize: 32,
