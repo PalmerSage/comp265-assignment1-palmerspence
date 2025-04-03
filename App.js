@@ -1,13 +1,29 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, Pressable, Modal, Image, TextInput, Button, Switch } from 'react-native';
-// My chosen external npm
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  Pressable,
+  Modal,
+  Image,
+  TextInput,
+  Button,
+  Switch,
+} from 'react-native';
+
+// speech stuff
 import * as Speech from 'expo-speech';
+
 const App = () => {
+  // all the state stuff
   const [advice, setAdvice] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [userNote, setUserNote] = useState('');
   const [noteLog, setNoteLog] = useState([]);
   const [privateMode, setPrivateMode] = useState(false);
+
+  // mood data - emoji and advice
   const moods = [
     { emoji: '😊', advice: 'Keep smiling. It looks good on you.' },
     { emoji: '😢', advice: 'Let it out. You are allowed to feel this way.' },
@@ -20,152 +36,139 @@ const App = () => {
     { emoji: '😭', advice: 'Tears are just emotions leaving your body.' },
   ];
 
-  
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Image
-        source={require('./assets/logo.png')}
-        style={styles.logo}
-      />
+      {/* logo at the top */}
+      <Image source={require('./assets/logo.png')} style={styles.logo} />
+
+      {/* tagline under logo */}
       <Text style={styles.tagline}>Tap how you feel!</Text>
 
-      {/* Pressing emoji with text and speech */}
-{/* Emoji grid */}
-<View style={styles.emojiGrid}>
-  {moods.map((mood, index) => (
-    <Pressable
-      key={index}
-      onPress={() => {
-        setAdvice(mood.advice);
-        setModalVisible(true);
-        Speech.speak(mood.advice);
-      }}
-    >
-      <View style={styles.emojiBox}>
-        <Text style={styles.emoji}>{mood.emoji}</Text>
-      </View>
-    </Pressable>
-  ))}
-</View>
-
-          {/* Modal pop up after you tap an emoji */}
-    <Modal visible={modalVisible} transparent={true}>
-      <View style={styles.modalBackground}>
-        <View style={styles.modalContent}>
-          <Text style={styles.adviceText}>{advice}</Text>
-          <Pressable onPress={() => setModalVisible(false)}>
-            <Text style={styles.closeText}>Close</Text>
+      {/* grid of emoji buttons */}
+      <View style={styles.emojiGrid}>
+        {moods.map((mood, index) => (
+          <Pressable
+            key={index}
+            onPress={() => {
+              setAdvice(mood.advice);
+              setModalVisible(true);
+              Speech.speak(mood.advice);
+            }}
+          >
+            <View style={styles.emojiBox}>
+              <Text style={styles.emoji}>{mood.emoji}</Text>
+            </View>
           </Pressable>
-        </View>
+        ))}
       </View>
-    </Modal>
 
+      {/* advice popup modal */}
+      <Modal visible={modalVisible} transparent={true}>
+        <View style={styles.modalBackground}>
+          <View style={styles.modalContent}>
+            <Text style={styles.adviceText}>{advice}</Text>
+            <Pressable onPress={() => setModalVisible(false)}>
+              <Text style={styles.closeText}>Close</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
 
-    <View style={styles.switchContainer}>
-  <Text style={styles.switchLabel}>Private Mode (Hides Notes)</Text>
-  <Switch
-    value={privateMode}
-    onValueChange={setPrivateMode}
-  />
-</View>
-    <TextInput
+      {/* toggle for hiding notes */}
+      <View style={styles.switchContainer}>
+        <Text style={styles.switchLabel}>Private Mode (Hides Notes)</Text>
+        <Switch value={privateMode} onValueChange={setPrivateMode} />
+      </View>
+
+      {/* text box for journaling */}
+      <TextInput
         style={styles.textInput}
         placeholder="Write how you feel..."
         value={userNote}
         onChangeText={setUserNote}
       />
-    <Button
-      title="Log Note"
-      onPress={() => {
-        if (userNote.trim() !== '') {
-          setNoteLog([...noteLog, userNote]);
-          setUserNote('');
-        }
-      }}
-    />
-    {/* Private mode wrapping saved notes section */}
-{!privateMode && (
-  <View style={styles.savedNoteContainer}>
-    <Text style={styles.savedNoteLabel}>Saved Notes:</Text>
-    {/* using mapping to go through array */}
-    {noteLog.map((note, index) => (
-      <Text key={index} style={styles.savedNote}>• {note}</Text>
-    ))}
-  </View>
-)}
 
+      {/* log the note */}
+      <Button
+        title="Log Note"
+        onPress={() => {
+          if (userNote.trim() !== '') {
+            setNoteLog([...noteLog, userNote]);
+            setUserNote('');
+          }
+        }}
+      />
+
+      {/* saved notes (only if private mode is off) */}
+      {!privateMode && (
+        <View style={styles.savedNoteContainer}>
+          <Text style={styles.savedNoteLabel}>Saved Notes:</Text>
+          {noteLog.map((note, index) => (
+            <Text key={index} style={styles.savedNote}>
+              • {note}
+            </Text>
+          ))}
+        </View>
+      )}
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-
+  // main screen layout
   container: {
     alignItems: 'center',
     paddingVertical: 40,
+    backgroundColor: '#fff3f3',
+    flexGrow: 1,
   },
 
+  // under logo
   tagline: {
     fontSize: 22,
     marginTop: 10,
     marginBottom: 20,
     fontStyle: 'italic',
-    fontWeight: 500,
+    fontWeight: '500',
   },
-  
 
+  // grid for emoji buttons
   emojiGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
     marginTop: 20,
-    width: 370, // 👈 forces it to wrap into 3 per row (3 boxes * 80px + 3 gaps)
+    width: 370,
   },
-  
-  
-  
 
+  // box around each emoji
   emojiBox: {
     width: 80,
     height: 80,
     borderWidth: 1,
-    borderColor: '#000',
+    borderColor: '#ccc',
+    backgroundColor: '#fff',
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    margin: 8, // 👈 adds space around each box
+    margin: 8,
+    elevation: 3,
   },
-  
-  // Emoji size
+
+  // size of the emoji
   emoji: {
     fontSize: 32,
   },
-// Modal Styling
-  modalBackground: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-  },
-  modalContent: {
-    backgroundColor: '#fff',
-    padding: 20,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  logo: {
-    width: 250,
-    height: 250,
-    marginBottom: 5,
-  },
 
-
-  // Modal popup styling
+  // modal background (dark layer)
   modalBackground: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.4)',
   },
+
+  // box that pops up
   modalContent: {
     backgroundColor: '#fff',
     padding: 20,
@@ -173,17 +176,30 @@ const styles = StyleSheet.create({
     width: 260,
     alignItems: 'center',
   },
+
+  // the advice inside modal
   adviceText: {
     fontSize: 18,
     textAlign: 'center',
     marginBottom: 10,
     fontFamily: 'Arial',
   },
+
+  // close button text
   closeText: {
     fontSize: 16,
     fontWeight: 'bold',
     fontFamily: 'Arial',
   },
+
+  // logo image
+  logo: {
+    width: 220,
+    height: 220,
+    marginBottom: -15,
+  },
+
+  // note input box
   textInput: {
     borderWidth: 1,
     borderColor: '#aaa',
@@ -195,6 +211,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
 
+  // label above saved notes
   savedNoteLabel: {
     fontSize: 16,
     fontWeight: 'bold',
@@ -202,6 +219,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Arial',
   },
 
+  // saved note text
   savedNote: {
     fontSize: 16,
     fontStyle: 'italic',
@@ -209,19 +227,20 @@ const styles = StyleSheet.create({
     fontFamily: 'Arial',
   },
 
-  // Private mode switch
+  // toggle layout
   switchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 20,
-    gap: 10, 
+    gap: 10,
     marginBottom: -20,
   },
+
+  // label next to toggle
   switchLabel: {
     fontSize: 16,
     fontFamily: 'Arial',
   },
-
 });
 
 export default App;
